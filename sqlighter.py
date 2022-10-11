@@ -32,8 +32,6 @@ def get_user_list():
     return user_list
 
 
-
-
 def create_file(id):
     db.cursor().execute('DELETE FROM file')
     db.cursor().execute('INSERT INTO file (file_id) VALUES ("{0}")'.format(id))

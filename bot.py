@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.utils.exceptions import BotBlocked
 from config import API_TOKEN
 from sqlighter import *
 
@@ -24,8 +25,12 @@ async def getting_file(message: types.Message):
         create_file(message.document.file_id)
         await message.reply('Файл сохранен, начинаю отправлять последнюю версию всем пользователям')
         for user in get_user_list():
-            await bot.send_document(user, message.document.file_id, caption='Новая версия Casva!')
+            try:
+                await bot.send_document(user, message.document.file_id, caption='Новая версия Casva!')
+            except BotBlocked:
+                await message.reply('Пользователь {0} заблокировал бот'.format(user))
         await message.reply('Готово!')
+
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
